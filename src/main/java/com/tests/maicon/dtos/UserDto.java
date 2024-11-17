@@ -1,5 +1,7 @@
 package com.tests.maicon.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 public class UserDto {
 
@@ -7,13 +9,17 @@ public class UserDto {
     private String name;
     private String email;
 
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private String password;
+
     public UserDto() {
     }
 
-    public UserDto(Long id, String name, String email) {
+    public UserDto(Long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
     
     public Long getId() {
@@ -33,6 +39,10 @@ public class UserDto {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
 } 
