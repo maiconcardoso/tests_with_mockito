@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tests.maicon.Exceptions.ObjectNotFoundException;
 import com.tests.maicon.domain.User;
 import com.tests.maicon.repositories.UserRepository;
 
@@ -16,7 +17,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> user = repository.findById(id);
-        return user.orElse(null);
+        return user.orElseThrow(() -> new ObjectNotFoundException("Object Not Found!"));
     }
 
 }
