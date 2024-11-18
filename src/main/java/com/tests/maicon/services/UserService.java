@@ -36,9 +36,19 @@ public class UserService {
         return repository.save(mapper.map(userDto, User.class));
     }
 
+    public User update(UserDto obj) {
+        findByEmail(obj);
+        return repository.save(mapper.map(obj, User.class));
+    }
+
+    public void delete(Long id) {
+        findById(id);
+        repository.deleteById(id);
+    }
+
     public void findByEmail(UserDto userDto) {
         Optional<User> user = repository.findByEmail(userDto.getEmail());
-        if (user.isPresent()) {
+        if (user.isPresent() && !user.get().getId().equals(userDto.getId())) {
             throw new DataIntegrityVialotionException("Email already registered.");
         }
     }
