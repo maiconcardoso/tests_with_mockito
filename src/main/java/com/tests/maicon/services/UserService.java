@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.tests.maicon.Exceptions.DataIntegrityVialotionException;
 import org.springframework.stereotype.Service;
 
 import com.tests.maicon.Exceptions.ObjectNotFoundException;
@@ -31,7 +32,15 @@ public class UserService {
     }
 
     public User create(UserDto userDto) {
+        findByEmail(userDto);
         return repository.save(mapper.map(userDto, User.class));
+    }
+
+    public void findByEmail(UserDto userDto) {
+        Optional<User> user = repository.findByEmail(userDto.getEmail());
+        if (user.isPresent()) {
+            throw new DataIntegrityVialotionException("Email already registered.");
+        }
     }
 
 }
