@@ -1,6 +1,8 @@
 package com.tests.maicon.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.tests.maicon.Exceptions.ObjectNotFoundException;
 import com.tests.maicon.domain.User;
 import com.tests.maicon.dtos.UserDto;
 import com.tests.maicon.repositories.UserRepository;
@@ -59,6 +62,18 @@ public class UserServiceTest {
         Assertions.assertThat(sut.getId()).isEqualTo(ID);
         Assertions.assertThat(sut.getName()).isEqualTo(NAME);
         Assertions.assertThat(sut.getEmail()).isEqualTo(EMAIL);
+    }
+
+    @Test
+    public void whenFindByIdThenReturnAnObjectNotFoundException() {
+        when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Object not found!"));
+
+        try {
+            service.findById(ID);
+        } catch (ObjectNotFoundException e) {
+            Assertions.assertThatException();
+            Assertions.assertThat(e.getMessage()).isEqualTo("Object not found!");
+        }
     }
 
     private void start() {
