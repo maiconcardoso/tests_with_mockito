@@ -1,6 +1,7 @@
 package com.tests.maicon.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -88,6 +89,21 @@ public class UserServiceTest {
         Assertions.assertThat(sut.get(0).getId()).isEqualTo(user.getId());
         Assertions.assertThat(sut.get(0).getName()).isEqualTo(user.getName());
         Assertions.assertThat(sut.get(0).getEmail()).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    public void whenCreateThenReturnSuccess() {
+        when(repository.save(any())).thenReturn(user);
+
+        User sut = service.create(userDto);
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(sut).isNotEqualTo(userDto);
+        Assertions.assertThat(sut).isEqualTo(user);
+        Assertions.assertThat(sut.getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(sut.getName()).isEqualTo(userDto.getName());
+        Assertions.assertThat(sut.getEmail()).isEqualTo(userDto.getEmail());
+
     }
 
     private void start() {
