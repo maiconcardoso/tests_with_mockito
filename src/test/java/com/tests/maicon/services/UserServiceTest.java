@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -74,6 +75,19 @@ public class UserServiceTest {
             Assertions.assertThatException();
             Assertions.assertThat(e.getMessage()).isEqualTo("Object not found!");
         }
+    }
+
+    @Test
+    public void whenFindAllThenReturnAnListOfUsers() {
+        when(repository.findAll()).thenReturn(List.of(user));
+
+        List<User> sut = service.findAll();
+
+        Assertions.assertThat(sut).contains(user);
+        Assertions.assertThat(sut.get(0)).isEqualTo(user);
+        Assertions.assertThat(sut.get(0).getId()).isEqualTo(user.getId());
+        Assertions.assertThat(sut.get(0).getName()).isEqualTo(user.getName());
+        Assertions.assertThat(sut.get(0).getEmail()).isEqualTo(user.getEmail());
     }
 
     private void start() {
