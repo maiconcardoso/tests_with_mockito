@@ -159,8 +159,21 @@ public class UserServiceTest {
 
         service.delete(ID);
 
-        verify(repository, times(2)).deleteById(anyLong());
+        verify(repository, times(1)).deleteById(anyLong());
 
+    }
+
+    @Test
+    public void deleteWithObjectNotFoundException() {
+
+        when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Object not found!"));
+
+        try {
+            service.delete(ID);
+        } catch (ObjectNotFoundException e) {
+            Assertions.assertThatException();
+            Assertions.assertThat(e.getMessage()).isEqualTo("Object not found!");
+        }
     }
 
     private void start() {
