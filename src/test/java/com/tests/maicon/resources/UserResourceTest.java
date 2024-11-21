@@ -1,11 +1,19 @@
 package com.tests.maicon.resources;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import com.tests.maicon.domain.User;
 import com.tests.maicon.dtos.UserDto;
@@ -35,6 +43,21 @@ public class UserResourceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         start();
+    }
+
+    @Test
+    void whenFindByIdThenReturnSuccess() {
+        when(service.findById(anyLong())).thenReturn(user);
+        when(mapper.map(any(), any())).thenReturn(userDto);
+
+        ResponseEntity<UserDto> sut = resource.findById(ID);
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(sut.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(200));
+        Assertions.assertThat(sut.getBody()).isEqualTo(userDto);
+        Assertions.assertThat(sut.getBody().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(sut.getBody().getName()).isEqualTo(userDto.getName());
+        Assertions.assertThat(sut.getBody().getEmail()).isEqualTo(userDto.getEmail());
     }
 
     private void start() {
