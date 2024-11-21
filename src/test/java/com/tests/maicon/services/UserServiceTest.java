@@ -1,9 +1,11 @@
 package com.tests.maicon.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -148,6 +150,17 @@ public class UserServiceTest {
             Assertions.assertThatException();
             Assertions.assertThat(e.getMessage()).isEqualTo("Email already registered.");
         }
+    }
+
+    @Test
+    public void deleteWithSuccess() {
+        when(repository.findById(anyLong())).thenReturn(optionalUser);
+        doNothing().when(repository).deleteById(ID);
+
+        service.delete(ID);
+
+        verify(repository, times(2)).deleteById(anyLong());
+
     }
 
     private void start() {
