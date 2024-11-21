@@ -136,6 +136,20 @@ public class UserServiceTest {
         Assertions.assertThat(user.getEmail()).isEqualTo(sut.getEmail());
     }
 
+    @Test
+    public void whenUpdateThenReturnDataIntegretyVialotionException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        
+        try {
+            optionalUser.get().setId(2l);
+            service.update(userDto);
+
+        } catch (DataIntegrityVialotionException e) {
+            Assertions.assertThatException();
+            Assertions.assertThat(e.getMessage()).isEqualTo("Email already registered.");
+        }
+    }
+
     private void start() {
         user = new User(ID, NAME, EMAIL, PASSWORD);
         userDto = new UserDto(ID, NAME, EMAIL, PASSWORD);
