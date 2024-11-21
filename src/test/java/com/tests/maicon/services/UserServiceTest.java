@@ -122,6 +122,20 @@ public class UserServiceTest {
         }
     }
 
+    @Test
+    public void whenUpdateThenReturnSuccess() {
+
+        when(repository.save(any())).thenReturn(user);
+
+        User sut = service.update(userDto);
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(user).isEqualTo(sut);
+        Assertions.assertThat(user.getId()).isEqualTo(sut.getId());
+        Assertions.assertThat(user.getName()).isEqualTo(sut.getName());
+        Assertions.assertThat(user.getEmail()).isEqualTo(sut.getEmail());
+    }
+
     private void start() {
         user = new User(ID, NAME, EMAIL, PASSWORD);
         userDto = new UserDto(ID, NAME, EMAIL, PASSWORD);
