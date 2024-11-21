@@ -3,6 +3,7 @@ package com.tests.maicon.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.tests.maicon.Exceptions.DataIntegrityVialotionException;
 import com.tests.maicon.Exceptions.ObjectNotFoundException;
 import com.tests.maicon.domain.User;
 import com.tests.maicon.dtos.UserDto;
@@ -104,6 +106,20 @@ public class UserServiceTest {
         Assertions.assertThat(sut.getName()).isEqualTo(userDto.getName());
         Assertions.assertThat(sut.getEmail()).isEqualTo(userDto.getEmail());
 
+    }
+
+    @Test
+    public void whenCreateThenReturnDataIntegretyVialotionException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        
+        try {
+            optionalUser.get().setId(2l);
+            service.create(userDto);
+
+        } catch (DataIntegrityVialotionException e) {
+            Assertions.assertThatException();
+            Assertions.assertThat(e.getMessage()).isEqualTo("Email already registered.");
+        }
     }
 
     private void start() {
