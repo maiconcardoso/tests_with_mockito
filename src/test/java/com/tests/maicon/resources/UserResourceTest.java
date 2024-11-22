@@ -4,6 +4,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
@@ -58,6 +62,25 @@ public class UserResourceTest {
         Assertions.assertThat(sut.getBody().getId()).isEqualTo(userDto.getId());
         Assertions.assertThat(sut.getBody().getName()).isEqualTo(userDto.getName());
         Assertions.assertThat(sut.getBody().getEmail()).isEqualTo(userDto.getEmail());
+    }
+
+    @Test
+    public void whenFindAllThenReturnAListUserDto() {
+        when(service.findAll()).thenReturn(List.of(user));
+        when(mapper.map(any(), any())).thenReturn(userDto);
+
+        ResponseEntity<List<UserDto>> sut = resource.findAll();
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(sut.getBody()).isNotNull();
+        Assertions.assertThat(HttpStatus.OK).isEqualTo(sut.getStatusCode());
+        Assertions.assertThat(ResponseEntity.class).isEqualTo(sut.getClass());
+        Assertions.assertThat(ArrayList.class).isEqualTo(sut.getBody().getClass());
+        Assertions.assertThat(userDto).isEqualTo(sut.getBody().get(0));
+
+        Assertions.assertThat(sut.getBody().get(0).getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(sut.getBody().get(0).getName()).isEqualTo(userDto.getName());
+        Assertions.assertThat(sut.getBody().get(0).getEmail()).isEqualTo(userDto.getEmail());
     }
 
     private void start() {
