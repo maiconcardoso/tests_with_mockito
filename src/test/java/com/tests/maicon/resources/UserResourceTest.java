@@ -83,6 +83,18 @@ public class UserResourceTest {
         Assertions.assertThat(sut.getBody().get(0).getEmail()).isEqualTo(userDto.getEmail());
     }
 
+    @Test
+    public void whenCreateThenReturnStatusCreated() {
+        when(service.create(any())).thenReturn(user);
+
+        ResponseEntity<UserDto> sut = resource.create(userDto);
+        sut.getHeaders();
+
+        Assertions.assertThat(HttpStatus.CREATED).isEqualTo(sut.getStatusCode());
+        Assertions.assertThat(sut.getHeaders().get("Location")).isNotNull();
+
+    }
+
     private void start() {
         user = new User(ID, NAME, EMAIL, PASSWORD);
         userDto = new UserDto(ID, NAME, EMAIL, PASSWORD);
