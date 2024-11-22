@@ -2,6 +2,7 @@ package com.tests.maicon.resources;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -88,11 +89,38 @@ public class UserResourceTest {
         when(service.create(any())).thenReturn(user);
 
         ResponseEntity<UserDto> sut = resource.create(userDto);
-        sut.getHeaders();
 
         Assertions.assertThat(HttpStatus.CREATED).isEqualTo(sut.getStatusCode());
         Assertions.assertThat(sut.getHeaders().get("Location")).isNotNull();
 
+    }
+
+    @Test
+    public void whenUpdateThenReturnSuccess() {
+        when(service.update(userDto)).thenReturn(user);
+        when(mapper.map(any(), any())).thenReturn(userDto);
+
+        ResponseEntity<UserDto> sut = resource.update(ID, userDto);
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(sut.getBody()).isNotNull();
+        Assertions.assertThat(HttpStatus.OK).isEqualTo(sut.getStatusCode());
+        Assertions.assertThat(userDto.getClass()).isEqualTo(sut.getBody().getClass());
+
+        Assertions.assertThat(ID).isEqualTo(sut.getBody().getId());
+        Assertions.assertThat(NAME).isEqualTo(sut.getBody().getName());
+        Assertions.assertThat(EMAIL).isEqualTo(sut.getBody().getEmail());
+    }
+
+    @Test
+    void whenDeleteThenReturnSuccess() {
+        doNothing().when(service).delete(anyLong());
+
+        ResponseEntity<Void> sut = resource.delete(ID);
+
+        Assertions.assertThat(sut).isNotNull();
+        Assertions.assertThat(HttpStatus.NO_CONTENT).isEqualTo(sut.getStatusCode());
+        Assertions.assertThat(sut.getBody()).isNull();
     }
 
     private void start() {
